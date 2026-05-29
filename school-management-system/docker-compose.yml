@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  school-management-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: school-management-system
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_HOST: 0.0.0.0
+      FLASK_PORT: 5000
+      FLASK_DEBUG: False
+      SECRET_KEY: dev-secret-key
+      DATABASE_URL: sqlite:///school_management.db
+    volumes:
+      - ./app:/app/app
+      - ./images:/app/images
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  db_data:
